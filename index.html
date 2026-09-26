@@ -107,19 +107,21 @@
             max-width: 520px;
         }
 
+        /* Modern dark & refined subtle outer borders */
         .game-container {
             width: min(520px, 78vw, 78vh);
             height: min(520px, 78vw, 78vh);
             background: #bbada0; 
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 14px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
             gap: 12px;
-            box-shadow: 0 16px 45px rgba(0,0,0,0.18), inset 0 4px 8px rgba(0,0,0,0.12);
-            border: 5px solid #b5a495;
+            box-shadow: 0 18px 48px rgba(0,0,0,0.22), inset 0 4px 10px rgba(0,0,0,0.15);
+            border: 6px solid #8e7c6d;
         }
+        
         .tile {
             background: #cdc1b4; 
             border-radius: 10px;
@@ -131,20 +133,20 @@
             color: #776e65;
             cursor: pointer;
             box-shadow: inset 0 3px 6px rgba(0,0,0,0.08);
+            transition: background-color 0.08s ease, color 0.08s ease; /* Makhan jaisi instant speed */
         }
         
         .tile-bounce {
-            animation: subtleBounce 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: superFastPop 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes subtleBounce {
-            0% { transform: scale(0.85); }
-            50% { transform: scale(1.06); }
-            100% { transform: scale(1); }
+        @keyframes superFastPop {
+            0% { transform: scale(0.75); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .tile.selectable {
             border: 3px dashed #776e65;
-            animation: pulse 0.8s infinite alternate;
+            animation: pulse 0.6s infinite alternate;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -191,62 +193,66 @@
             font-weight: bold;
         }
 
-        /* Game Over Modal Styling */
+        /* Ultra Smooth & Premium Game Over Modal */
         .game-over-modal {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(238, 228, 218, 0.90);
-            border-radius: 16px;
+            background: rgba(238, 228, 218, 0.92);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 18px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
             display: none;
             z-index: 50;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: smoothModalFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes smoothModalFade {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
         }
         .game-over-modal h2 {
-            font-size: 32px;
+            font-size: 34px;
             color: #776e65;
             margin: 0;
             font-weight: 900;
+            letter-spacing: -0.5px;
         }
         .modal-btns {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            width: 80%;
-            max-width: 260px;
+            gap: 12px;
+            width: 82%;
+            max-width: 270px;
         }
         .modal-btn {
             background: #8f7a66;
             color: #f9f6f2;
             border: none;
-            padding: 12px;
+            padding: 13px;
             border-radius: 8px;
             font-weight: bold;
             font-size: 13px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: transform 0.1s, background 0.1s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.08s ease, background 0.08s ease;
             text-align: center;
         }
         .modal-btn:active {
-            transform: scale(0.96);
+            transform: scale(0.95);
             background: #776e65;
         }
         .modal-btn.revive-btn {
             background: #edc22e;
             color: #776e65;
             font-weight: 900;
+            box-shadow: 0 6px 16px rgba(237, 194, 46, 0.4);
         }
 
         .controls-bar {
@@ -345,9 +351,9 @@
             <button onclick="closeModal()">Cancel</button>
         </div>
         
-        <!-- Game Over Modal with Ad Revive Option -->
+        <!-- Game Over Modal with Rewarded Ad option -->
         <div class="game-over-modal" id="gameOverModal">
-            <h2>Game Over!</h2>
+            <h2>Game Over</h2>
             <div class="modal-btns">
                 <button class="modal-btn revive-btn" onclick="watchAdAndRevive()">Watch Ad & Revive</button>
                 <button class="modal-btn" onclick="startNewGame()">New Game</button>
@@ -387,7 +393,7 @@
     </div>
 
     <footer>
-        Copyright &copy; <strong>Amrit Bharadwaj</strong>. All Right Reserved
+        Copyright &copy; <strong>Amrit Bharadwaj</strong>. All Right Reserved[span_2](start_span)[span_2](end_span)
     </footer>
 
     <script>
@@ -508,13 +514,11 @@
         }
 
         function checkGameOver() {
-            // Check for empty cells
             for(let r=0; r<4; r++) {
                 for(let c=0; c<4; c++) {
                     if(board[r][c] === 0) return false;
                 }
             }
-            // Check for possible horizontal/vertical merges
             for(let r=0; r<4; r++) {
                 for(let c=0; c<4; c++) {
                     let val = board[r][c];
@@ -522,28 +526,26 @@
                     if(r < 3 && val === board[r+1][c]) return false;
                 }
             }
-            // If no moves left, show Game Over
             document.getElementById('gameOverModal').style.display = 'flex';
             return true;
         }
 
         function watchAdAndRevive() {
-            // Yahan aap apna Google AdMob / Rewarded Ad ka code integrate kar sakte hain.
-            // Ad complete dekhne ke baad yeh function trigger hoga:
+            // Yahan aap apna Google AdMob / Ad integration code laga sakte hain.
+            // Ad complete dekhne ke baad yeh actions execute honge:
             
-            // 1. Refill power-ups (Reset counts to 0)
+            // 1. Refill power-ups (reset usage counts to 0)
             undoCount = 0;
             exchangeCount = 0;
             deleteCount = 0;
 
-            // 2. Clear 2 random tiles (ghar khali karna) taaki user ko jagah mile
+            // 2. Clear 2 random tiles (ghar khali karna) taaki user ko space mile
             let filledCells = [];
             for(let r=0; r<4; r++) {
                 for(let c=0; c<4; c++) {
                     if(board[r][c] !== 0) filledCells.push({r, c});
                 }
             }
-            // Shuffle and clear up to 2 tiles
             filledCells.sort(() => Math.random() - 0.5);
             let clearedCount = 0;
             for(let cell of filledCells) {
@@ -553,7 +555,7 @@
                 }
             }
 
-            // Hide Game Over modal and redraw
+            // Hide Game Over modal and resume game
             document.getElementById('gameOverModal').style.display = 'none';
             closeModal();
             draw();
@@ -599,7 +601,8 @@
                 draw();
             }
         }
-function handleCellClick(r, c) {
+
+        function handleCellClick(r, c) {
             if(mode === 'exchange_first') {
                 if(board[r][c] === 0) {
                     alert("Khali ghar replace nahi ho sakta!");
@@ -742,5 +745,4 @@ function handleCellClick(r, c) {
     </script>
 </body>
 </html>
-
-           
+                
