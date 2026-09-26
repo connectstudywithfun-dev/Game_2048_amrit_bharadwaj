@@ -26,7 +26,6 @@
             touch-action: manipulation;
         }
         
-        /* Screenshot jaisa official header layout */
         .header-container {
             width: 100%;
             max-width: 520px;
@@ -108,8 +107,7 @@
             max-width: 520px;
         }
 
-        /* Sabhi screen, tablet, split view aur floating windows ke liye bada aur optimized size */
-                        .game-container {
+        .game-container {
             width: min(520px, 78vw, 78vh);
             height: min(520px, 78vw, 78vh);
             background: #bbada0; 
@@ -153,7 +151,6 @@
             100% { transform: scale(1.03); }
         }
         
-        /* Screenshot authentic exact color grading */
         .tile-2 { background: #eee4da; color: #776e65; }
         .tile-4 { background: #ede0c8; color: #776e65; }
         .tile-8 { background: #f2b179; color: #f9f6f2; }
@@ -192,6 +189,64 @@
             cursor: pointer;
             font-size: 11px;
             font-weight: bold;
+        }
+
+        /* Game Over Modal Styling */
+        .game-over-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(238, 228, 218, 0.90);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            display: none;
+            z-index: 50;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .game-over-modal h2 {
+            font-size: 32px;
+            color: #776e65;
+            margin: 0;
+            font-weight: 900;
+        }
+        .modal-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 80%;
+            max-width: 260px;
+        }
+        .modal-btn {
+            background: #8f7a66;
+            color: #f9f6f2;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.1s, background 0.1s;
+            text-align: center;
+        }
+        .modal-btn:active {
+            transform: scale(0.96);
+            background: #776e65;
+        }
+        .modal-btn.revive-btn {
+            background: #edc22e;
+            color: #776e65;
+            font-weight: 900;
         }
 
         .controls-bar {
@@ -289,6 +344,16 @@
             <span id="popupText">Mode active</span>
             <button onclick="closeModal()">Cancel</button>
         </div>
+        
+        <!-- Game Over Modal with Ad Revive Option -->
+        <div class="game-over-modal" id="gameOverModal">
+            <h2>Game Over!</h2>
+            <div class="modal-btns">
+                <button class="modal-btn revive-btn" onclick="watchAdAndRevive()">Watch Ad & Revive</button>
+                <button class="modal-btn" onclick="startNewGame()">New Game</button>
+            </div>
+        </div>
+
         <div class="game-container" id="grid"></div>
     </div>
 
@@ -350,6 +415,7 @@
         }
 
         function startNewGame() {
+            document.getElementById('gameOverModal').style.display = 'none';
             board = [
                 [0,0,0,0],
                 [0,0,0,0],
@@ -421,6 +487,7 @@
             document.getElementById('best').innerText = best;
 
             updateLifelines();
+            checkGameOver();
         }
 
         function updateLifelines() {
@@ -438,6 +505,58 @@
             if(deleteCount >= 1) delLines[0].classList.add('empty'); else delLines[0].classList.remove('empty');
             if(deleteCount >= 2) delLines[1].classList.add('empty'); else delLines[1].classList.remove('empty');
             document.getElementById('deleteBtn').disabled = (deleteCount >= 2);
+        }
+
+        function checkGameOver() {
+            // Check for empty cells
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    if(board[r][c] === 0) return false;
+                }
+            }
+            // Check for possible horizontal/vertical merges
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    let val = board[r][c];
+                    if(c < 3 && val === board[r][c+1]) return false;
+                    if(r < 3 && val === board[r+1][c]) return false;
+                }
+            }
+            // If no moves left, show Game Over
+            document.getElementById('gameOverModal').style.display = 'flex';
+            return true;
+        }
+
+        function watchAdAndRevive() {
+            // Yahan aap apna Google AdMob / Rewarded Ad ka code integrate kar sakte hain.
+            // Ad complete dekhne ke baad yeh function trigger hoga:
+            
+            // 1. Refill power-ups (Reset counts to 0)
+            undoCount = 0;
+            exchangeCount = 0;
+            deleteCount = 0;
+
+            // 2. Clear 2 random tiles (ghar khali karna) taaki user ko jagah mile
+            let filledCells = [];
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    if(board[r][c] !== 0) filledCells.push({r, c});
+                }
+            }
+            // Shuffle and clear up to 2 tiles
+            filledCells.sort(() => Math.random() - 0.5);
+            let clearedCount = 0;
+            for(let cell of filledCells) {
+                if(clearedCount < 2) {
+                    board[cell.r][cell.c] = 0;
+                    clearedCount++;
+                }
+            }
+
+            // Hide Game Over modal and redraw
+            document.getElementById('gameOverModal').style.display = 'none';
+            closeModal();
+            draw();
         }
 
         function undoMove() {
@@ -474,12 +593,13 @@
 
         function closeModal() {
             document.getElementById('topPopup').style.display = 'none';
-            mode = 'normal';
-            firstTile = null;
-            draw();
+            if(mode !== 'normal') {
+                mode = 'normal';
+                firstTile = null;
+                draw();
+            }
         }
-
-        function handleCellClick(r, c) {
+function handleCellClick(r, c) {
             if(mode === 'exchange_first') {
                 if(board[r][c] === 0) {
                     alert("Khali ghar replace nahi ho sakta!");
@@ -622,3 +742,5 @@
     </script>
 </body>
 </html>
+
+           
