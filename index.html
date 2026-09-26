@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2048 - Pro Edition</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #faf8ef;
+            color: #776e65;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            touch-action: none;
+            padding: 10px 0;
+        }
+        .header-container {
+            width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+        h1 { 
+            font-size: 42px; 
+            margin: 0; 
+            font-weight: 800;
+            color: #776e65;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .scores-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        .score-box {
+            font-size: 12px;
+            background: #bbada0;
+            color: #eee4da;
+            padding: 8px 22px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .score-box span {
+            font-size: 22px;
+            color: #ffffff;
+            display: block;
+        }
+        .new-game-btn {
+            background: #8f7a66;
+            color: #f9f6f2;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background 0.1s, transform 0.1s;
+        }
+        .new-game-btn:active {
+            background: #776e65;
+            transform: scale(0.95);
+        }
+        
+        .game-wrapper {
+            position: relative;
+        }
+        .game-container {
+            width: 500px;
+            height: 500px;
+            background: #bbada0; 
+            border-radius: 16px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 14px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15), inset 0 3px 6px rgba(0,0,0,0.1);
+            border: 4px solid #b5a495;
+        }
+        .tile {
+            background: #cdc1b4; 
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #776e65;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        /* Sirf naye ya change hone wale tile par halka sa bounce/pop effect */
+        .tile-bounce {
+            animation: subtleBounce 0.2s ease-in-out;
+        }
+        @keyframes subtleBounce {
+            0% { transform: scale(0.85); }
+            50% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+
+        .tile.selectable {
+            border: 3px dashed #776e65;
+            animation: pulse 0.8s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
+        }
+        
+        .tile-2 { background: #eee4da; color: #776e65; }
+        .tile-4 { background: #ede0c8; color: #776e65; }
+        .tile-8 { background: #f2b179; color: #f9f6f2; }
+        .tile-16 { background: #f59563; color: #f9f6f2; }
+        .tile-32 { background: #f67c5f; color: #f9f6f2; }
+        .tile-64 { background: #f65e3b; color: #f9f6f2; }
+        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: 32px; }
+        .tile-256 { background: #edcc61; color: #f9f6f2; font-size: 32px; }
+        .tile-512 { background: #edc850; color: #f9f6f2; font-size: 32px; }
+        .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 28px; }
+        .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 28px; }
+
+        .top-popup {
+            position: absolute;
+            top: -55px;
+            left: 0;
+            width: 100%;
+            background: #faf8ef;
+            padding: 8px 14px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border: 1px solid #bbada0;
+            display: none;
+            z-index: 20;
+        }
+        .top-popup span { font-size: 13px; font-weight: 600; color: #776e65; }
+        .top-popup button {
+            background: #8f7a66;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .controls-bar {
+            width: 280px;
+            height: 70px;
+            background: #bbada0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        .ctrl-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #f9f6f2;
+            padding: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+        .ctrl-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .ctrl-btn:active:not(:disabled) {
+            transform: scale(0.9);
+        }
+        
+        .life-lines {
+            display: flex;
+            gap: 4px;
+            margin-top: 2px;
+        }
+        .line {
+            width: 12px;
+            height: 2px;
+            background: #8f7a66;
+            border-radius: 1px;
+            transition: background 0.2s;
+        }
+        .line.empty {
+            background: rgba(143, 122, 102, 0.25);
+        }
+        
+        .ctrl-label {
+            font-size: 9px;
+            color: #f9f6f2;
+            font-weight: bold;
+            margin-top: 1px;
+            text-transform: lowercase;
+            letter-spacing: 0.5px;
+        }
+
+        footer {
+            font-size: 12px;
+            color: #8f7a66;
+            letter-spacing: 0.5px;
+            text-align: center;
+            font-weight: 600;
+        }
+        footer strong {
+            font-weight: 800;
+            color: #594f45;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <h1>2048</h1>
+        <div class="header-right">
+            <div class="scores-wrapper">
+                <div class="score-box">Score <span id="score">0</span></div>
+                <div class="score-box">Best <span id="best">0</span></div>
+            </div>
+            <button class="new-game-btn" onclick="startNewGame()">New Game</button>
+        </div>
+    </div>
+
+    <div class="game-wrapper">
+        <div class="top-popup" id="topPopup">
+            <span id="popupText">Mode active</span>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+        <div class="game-container" id="grid"></div>
+    </div>
+
+    <div class="controls-bar">
+        <div class="ctrl-item">
+            <button class="ctrl-btn" id="undoBtn" onclick="undoMove()" title="Undo">↩</button>
+            <div class="life-lines" id="undoLives">
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+            <span class="ctrl-label">back</span>
+        </div>
+
+        <div class="ctrl-item">
+            <button class="ctrl-btn" id="exchangeBtn" onclick="triggerExchange()" title="Exchange">🔄</button>
+            <div class="life-lines" id="exchangeLives">
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+            <span class="ctrl-label">replace</span>
+        </div>
+
+        <div class="ctrl-item">
+            <button class="ctrl-btn" id="deleteBtn" onclick="triggerDelete()" title="Delete">🗑️</button>
+            <div class="life-lines" id="deleteLives">
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+            <span class="ctrl-label">remove</span>
+        </div>
+    </div>
+
+    <footer>
+        Copyright &copy; <strong>Amrit Bharadwaj</strong>. All Right Reserved
+    </footer>
+
+    <script>
+        let board = [
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,0,0,0]
+        ];
+        let score = 0;
+        let best = localStorage.getItem('best_2048') || 0;
+        let history = [];
+        
+        let mode = 'normal'; 
+        let undoCount = 0;
+        let exchangeCount = 0;
+        let deleteCount = 0;
+        let firstTile = null;
+        let animatedTiles = new Set(); // Sirf naye/changed tiles ko track karne ke liye
+
+        document.getElementById('best').innerText = best;
+
+        function init() {
+            startNewGame();
+        }
+
+        function startNewGame() {
+            board = [
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0]
+            ];
+            score = 0;
+            history = [];
+            undoCount = 0;
+            exchangeCount = 0;
+            deleteCount = 0;
+            mode = 'normal';
+            firstTile = null;
+            animatedTiles.clear();
+            closeModal();
+            addNumber();
+            addNumber();
+            draw();
+        }
+
+        function saveHistory() {
+            history.push({
+                board: JSON.parse(JSON.stringify(board)),
+                score: score
+            });
+            if(history.length > 10) history.shift();
+        }
+
+        function addNumber() {
+            let empty = [];
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    if(board[r][c] === 0) empty.push({r, c});
+                }
+            }
+            if(empty.length > 0) {
+                let cell = empty[Math.floor(Math.random() * empty.length)];
+                board[cell.r][cell.c] = Math.random() < 0.9 ? 2 : 4;
+                animatedTiles.add(`${cell.r}-${cell.c}`); // Sirf is naye tile par bounce lagega
+            }
+        }
+
+        function draw() {
+            let grid = document.getElementById('grid');
+            grid.innerHTML = '';
+
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    let val = board[r][c];
+                    let tile = document.createElement('div');
+                    let isSel = (firstTile && firstTile.r === r && firstTile.c === c);
+                    let key = `${r}-${c}`;
+                    let isAnimated = animatedTiles.has(key);
+
+                    tile.className = `tile ${val ? 'tile-'+val : ''} ${isSel ? 'selectable' : ''} ${isAnimated ? 'tile-bounce' : ''}`;
+                    tile.innerText = val ? val : '';
+                    tile.onclick = () => handleCellClick(r, c);
+                    grid.appendChild(tile);
+                }
+            }
+            
+            animatedTiles.clear(); // Render hone ke baad set clear kar do taaki agle move par purane tiles bounce na karein
+
+            document.getElementById('score').innerText = score;
+            if(score > best) {
+                best = score;
+                localStorage.setItem('best_2048', best);
+            }
+            document.getElementById('best').innerText = best;
+
+            updateLifelines();
+        }
+
+        function updateLifelines() {
+            let undoLines = document.getElementById('undoLives').children;
+            if(undoCount >= 1) undoLines[0].classList.add('empty'); else undoLines[0].classList.remove('empty');
+            if(undoCount >= 2) undoLines[1].classList.add('empty'); else undoLines[1].classList.remove('empty');
+            document.getElementById('undoBtn').disabled = (undoCount >= 2);
+
+            let exLines = document.getElementById('exchangeLives').children;
+            if(exchangeCount >= 1) exLines[0].classList.add('empty'); else exLines[0].classList.remove('empty');
+            if(exchangeCount >= 2) exLines[1].classList.add('empty'); else exLines[1].classList.remove('empty');
+            document.getElementById('exchangeBtn').disabled = (exchangeCount >= 2);
+
+            let delLines = document.getElementById('deleteLives').children;
+            if(deleteCount >= 1) delLines[0].classList.add('empty'); else delLines[0].classList.remove('empty');
+            if(deleteCount >= 2) delLines[1].classList.add('empty'); else delLines[1].classList.remove('empty');
+            document.getElementById('deleteBtn').disabled = (deleteCount >= 2);
+        }
+
+        function undoMove() {
+            if(undoCount >= 2) return;
+            if(history.length > 0) {
+                let lastState = history.pop();
+                board = lastState.board;
+                score = lastState.score;
+                undoCount++;
+                draw();
+            }
+        }
+
+        function triggerExchange() {
+            if(exchangeCount >= 2) return;
+            mode = 'exchange_first';
+            firstTile = null;
+            showBanner("Replace: Pehla ghar select karo (1/2)");
+            draw();
+        }
+
+        function triggerDelete() {
+            if(deleteCount >= 2) return;
+            mode = 'delete';
+            firstTile = null;
+            showBanner("Remove: Gayab karne ke liye ghar select karo");
+            draw();
+        }
+
+        function showBanner(text) {
+            document.getElementById('popupText').innerText = text;
+            document.getElementById('topPopup').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('topPopup').style.display = 'none';
+            mode = 'normal';
+            firstTile = null;
+            draw();
+        }
+
+        function handleCellClick(r, c) {
+            if(mode === 'exchange_first') {
+                if(board[r][c] === 0) {
+                    alert("Khali ghar replace nahi ho sakta!");
+                    return;
+                }
+                firstTile = {r, c};
+                mode = 'exchange_second';
+                showBanner("Replace: Ab dusra ghar select karo");
+                draw();
+            } else if(mode === 'exchange_second') {
+                let r1 = firstTile.r;
+                let c1 = firstTile.c;
+                if(r1 === r && c1 === c) return;
+                
+                saveHistory();
+                let temp = board[r1][c1];
+                board[r1][c1] = board[r][c];
+                board[r][c] = temp;
+                
+                // Dono swapped tiles par bounce lagao
+                animatedTiles.add(`${r1}-${c1}`);
+                animatedTiles.add(`${r}-${c}`);
+
+                exchangeCount++;
+                closeModal();
+                draw();
+            } else if(mode === 'delete') {
+                if(board[r][c] === 0) {
+                    alert("Yeh ghar pehle se hi khali hai!");
+                    return;
+                }
+                saveHistory();
+                board[r][c] = 0;
+                deleteCount++;
+                closeModal();
+                draw();
+            }
+        }
+
+        function slide(row) {
+            let arr = row.filter(val => val);
+            let missing = 4 - arr.length;
+            let zeros = Array(missing).fill(0);
+            return arr.concat(zeros);
+        }
+
+        function combine(row) {
+            for(let i=0; i<3; i++) {
+                if(row[i] !== 0 && row[i] === row[i+1]) {
+                    row[i] *= 2;
+                    score += row[i];
+                    row[i+1] = 0;
+                }
+            }
+            return row;
+        }
+
+        function moveLeft() {
+            let changed = false;
+            for(let r=0; r<4; r++) {
+                let original = [...board[r]];
+                let row = slide(board[r]);
+                row = combine(row);
+                row = slide(row);
+                board[r] = row;
+                if(original.toString() !== board[r].toString()) changed = true;
+            }
+            return changed;
+        }
+
+        function rotate() {
+            let newBoard = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<4; c++) {
+                    newBoard[c][3-r] = board[r][c];
+                }
+            }
+            board = newBoard;
+        }
+
+        function handleInput(direction) {
+            if(mode !== 'normal') return;
+            saveHistory();
+            let moved = false;
+            if(direction === 'left') {
+                moved = moveLeft();
+            } else if(direction === 'up') {
+                rotate(); rotate(); rotate();
+                moved = moveLeft();
+                rotate();
+            } else if(direction === 'right') {
+                rotate(); rotate();
+                moved = moveLeft();
+                rotate(); rotate();
+            } else if(direction === 'down') {
+                rotate();
+                moved = moveLeft();
+                rotate(); rotate(); rotate();
+            }
+
+            if(moved) {
+                addNumber();
+                draw();
+            } else {
+                history.pop();
+            }
+        }
+
+        window.addEventListener('keydown', e => {
+            if(e.key === 'ArrowLeft') handleInput('left');
+            if(e.key === 'ArrowUp') handleInput('up');
+            if(e.key === 'ArrowRight') handleInput('right');
+            if(e.key === 'ArrowDown') handleInput('down');
+        });
+
+        let startX, startY;
+        window.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        }, {passive: true});
+
+        window.addEventListener('touchend', e => {
+            if(!startX || !startY) return;
+            let endX = e.changedTouches[0].clientX;
+            let endY = e.changedTouches[0].clientY;
+            let diffX = endX - startX;
+            let diffY = endY - startY;
+
+            if(Math.abs(diffX) > Math.abs(diffY)) {
+                if(diffX > 25) handleInput('right');
+                else if(diffX < -25) handleInput('left');
+            } else {
+                if(diffY > 25) handleInput('down');
+                else if(diffY < -25) handleInput('up');
+            }
+            startX = null;
+            startY = null;
+        }, {passive: true});
+
+        init();
+    </script>
+</body>
+                  </html>
+                  
