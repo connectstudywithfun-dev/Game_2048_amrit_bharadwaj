@@ -107,7 +107,7 @@
             max-width: 520px;
         }
 
-        /* Modern dark & refined subtle outer borders */
+        /* Board outer layout */
         .game-container {
             width: min(520px, 78vw, 78vh);
             height: min(520px, 78vw, 78vh);
@@ -122,6 +122,7 @@
             border: 6px solid #8e7c6d;
         }
         
+        /* Har individual empty ghar/cell ke corners ko halka aur modern dark shade */
         .tile {
             background: #cdc1b4; 
             border-radius: 10px;
@@ -132,21 +133,22 @@
             font-weight: 900;
             color: #776e65;
             cursor: pointer;
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.08);
-            transition: background-color 0.08s ease, color 0.08s ease; /* Makhan jaisi instant speed */
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.18), inset 0 -2px 4px rgba(255, 255, 255, 0.15);
+            transition: background-color 0.05s ease, color 0.05s ease;
         }
         
+        /* Hanuman ji jaisi instant super-fast 3D bounce effect har word par */
         .tile-bounce {
-            animation: superFastPop 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: hanumanFastBounce 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes superFastPop {
-            0% { transform: scale(0.75); opacity: 0.8; }
+        @keyframes hanumanFastBounce {
+            0% { transform: scale(0.7); opacity: 0.5; }
             100% { transform: scale(1); opacity: 1; }
         }
 
         .tile.selectable {
             border: 3px dashed #776e65;
-            animation: pulse 0.6s infinite alternate;
+            animation: pulse 0.5s infinite alternate;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -193,66 +195,66 @@
             font-weight: bold;
         }
 
-        /* Ultra Smooth & Premium Game Over Modal */
+        /* Ultra Modern Bold & Smooth Game Over Modal */
         .game-over-modal {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(238, 228, 218, 0.92);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            background: rgba(238, 228, 218, 0.94);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             border-radius: 18px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 18px;
+            gap: 20px;
             display: none;
             z-index: 50;
-            animation: smoothModalFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: ultraSmoothModal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes smoothModalFade {
-            0% { opacity: 0; transform: scale(0.9); }
+        @keyframes ultraSmoothModal {
+            0% { opacity: 0; transform: scale(0.88); }
             100% { opacity: 1; transform: scale(1); }
         }
         .game-over-modal h2 {
-            font-size: 34px;
+            font-size: 36px;
             color: #776e65;
             margin: 0;
             font-weight: 900;
             letter-spacing: -0.5px;
+            text-transform: uppercase;
         }
         .modal-btns {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            width: 82%;
-            max-width: 270px;
+            width: 85%;
+            max-width: 280px;
         }
         .modal-btn {
             background: #8f7a66;
             color: #f9f6f2;
             border: none;
-            padding: 13px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 13px;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 14px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: transform 0.08s ease, background 0.08s ease;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.18);
+            transition: transform 0.06s ease, background 0.06s ease;
             text-align: center;
         }
         .modal-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.94);
             background: #776e65;
         }
         .modal-btn.revive-btn {
             background: #edc22e;
             color: #776e65;
-            font-weight: 900;
-            box-shadow: 0 6px 16px rgba(237, 194, 46, 0.4);
+            box-shadow: 0 8px 20px rgba(237, 194, 46, 0.45);
         }
 
         .controls-bar {
@@ -393,7 +395,7 @@
     </div>
 
     <footer>
-        Copyright &copy; <strong>Amrit Bharadwaj</strong>. All Right Reserved[span_2](start_span)[span_2](end_span)
+        &copy; Copyright . <strong>Amrit Bharadwaj</strong> . All Right Reserved
     </footer>
 
     <script>
@@ -531,10 +533,10 @@
         }
 
         function watchAdAndRevive() {
-            // Yahan aap apna Google AdMob / Ad integration code laga sakte hain.
+            // Yahan par aap apna Google AdMob / Rewarded Ad code laga sakte hain.
             // Ad complete dekhne ke baad yeh actions execute honge:
             
-            // 1. Refill power-ups (reset usage counts to 0)
+            // 1. Refill power-ups (reset counts to 0)
             undoCount = 0;
             exchangeCount = 0;
             deleteCount = 0;
@@ -602,6 +604,7 @@
             }
         }
 
+        
         function handleCellClick(r, c) {
             if(mode === 'exchange_first') {
                 if(board[r][c] === 0) {
@@ -745,4 +748,3 @@
     </script>
 </body>
 </html>
-                
