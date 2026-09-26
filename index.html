@@ -17,23 +17,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             min-height: 100vh;
             margin: 0;
-            padding: 10px;
-            overflow-x: hidden;
+            padding: 5px;
+            overflow: hidden;
             touch-action: manipulation;
         }
         .header-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 5px;
+            margin-bottom: 8px;
         }
         h1 { 
-            font-size: 38px; 
+            font-size: 34px; 
             margin: 0; 
             font-weight: 800;
             color: #776e65;
@@ -41,17 +42,17 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         .scores-wrapper {
             display: flex;
-            gap: 6px;
+            gap: 5px;
         }
         .score-box {
-            font-size: 11px;
+            font-size: 10px;
             background: #bbada0;
             color: #eee4da;
-            padding: 6px 14px;
+            padding: 5px 10px;
             border-radius: 6px;
             font-weight: bold;
             text-align: center;
@@ -59,7 +60,7 @@
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
         .score-box span {
-            font-size: 18px;
+            font-size: 16px;
             color: #ffffff;
             display: block;
         }
@@ -67,10 +68,10 @@
             background: #8f7a66;
             color: #f9f6f2;
             border: none;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: background 0.1s, transform 0.1s;
@@ -83,21 +84,22 @@
         .game-wrapper {
             position: relative;
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             display: flex;
             justify-content: center;
-            margin: 10px 0;
+            margin: 5px 0;
         }
+        /* Split view aur portrait ke liye automatic scaling */
         .game-container {
-            width: 100%;
-            aspect-ratio: 1 / 1;
+            width: min(85vw, 85vh, 400px);
+            height: min(85vw, 85vh, 400px);
             background: #bbada0; 
-            border-radius: 14px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 10px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            gap: 10px;
+            gap: 8px;
             box-shadow: 0 12px 35px rgba(0,0,0,0.15), inset 0 3px 6px rgba(0,0,0,0.1);
             border: 4px solid #b5a495;
         }
@@ -107,7 +109,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
+            font-size: calc(min(85vw, 85vh, 400px) * 0.075);
             font-weight: bold;
             color: #776e65;
             cursor: pointer;
@@ -138,19 +140,19 @@
         .tile-16 { background: #f59563; color: #f9f6f2; }
         .tile-32 { background: #f67c5f; color: #f9f6f2; }
         .tile-64 { background: #f65e3b; color: #f9f6f2; }
-        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: 26px; }
-        .tile-256 { background: #edcc61; color: #f9f6f2; font-size: 26px; }
-        .tile-512 { background: #edc850; color: #f9f6f2; font-size: 26px; }
-        .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 22px; }
-        .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 22px; }
+        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: calc(min(85vw, 85vh, 400px) * 0.065); }
+        .tile-256 { background: #edcc61; color: #f9f6f2; font-size: calc(min(85vw, 85vh, 400px) * 0.065); }
+        .tile-512 { background: #edc850; color: #f9f6f2; font-size: calc(min(85vw, 85vh, 400px) * 0.065); }
+        .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: calc(min(85vw, 85vh, 400px) * 0.055); }
+        .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: calc(min(85vw, 85vh, 400px) * 0.055); }
 
         .top-popup {
             position: absolute;
-            top: -45px;
+            top: -42px;
             left: 0;
             width: 100%;
             background: #faf8ef;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
@@ -160,12 +162,12 @@
             display: none;
             z-index: 20;
         }
-        .top-popup span { font-size: 12px; font-weight: 600; color: #776e65; }
+        .top-popup span { font-size: 11px; font-weight: 600; color: #776e65; }
         .top-popup button {
             background: #8f7a66;
             color: white;
             border: none;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 10px;
@@ -174,16 +176,16 @@
 
         .controls-bar {
             width: 100%;
-            max-width: 280px;
-            height: 65px;
+            max-width: 260px;
+            height: 55px;
             background: #bbada0;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 0 10px;
+            padding: 0 8px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-            margin: 5px 0;
+            margin-top: 6px;
         }
         .ctrl-item {
             display: flex;
@@ -194,9 +196,9 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             color: #f9f6f2;
-            padding: 2px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -212,11 +214,11 @@
         
         .life-lines {
             display: flex;
-            gap: 4px;
+            gap: 3px;
             margin-top: 2px;
         }
         .line {
-            width: 12px;
+            width: 10px;
             height: 2px;
             background: #8f7a66;
             border-radius: 1px;
@@ -227,7 +229,7 @@
         }
         
         .ctrl-label {
-            font-size: 9px;
+            font-size: 8px;
             color: #f9f6f2;
             font-weight: bold;
             margin-top: 1px;
@@ -236,12 +238,12 @@
         }
 
         footer {
-            font-size: 11px;
+            font-size: 10px;
             color: #8f7a66;
             letter-spacing: 0.5px;
             text-align: center;
             font-weight: 600;
-            margin-top: 5px;
+            margin-top: 6px;
         }
         footer strong {
             font-weight: 800;
