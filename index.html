@@ -107,7 +107,7 @@
             max-width: 520px;
         }
 
-        /* Board outer layout */
+        /* Official exact board layout & color grading */
         .game-container {
             width: min(520px, 78vw, 78vh);
             height: min(520px, 78vw, 78vh);
@@ -122,7 +122,7 @@
             border: 6px solid #8e7c6d;
         }
         
-        /* Har individual empty ghar/cell ke corners ko halka aur modern dark shade */
+        /* Bright official matching tiles with 3D depth and dark corners */
         .tile {
             background: #cdc1b4; 
             border-radius: 10px;
@@ -133,39 +133,40 @@
             font-weight: 900;
             color: #776e65;
             cursor: pointer;
-            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.18), inset 0 -2px 4px rgba(255, 255, 255, 0.15);
-            transition: background-color 0.05s ease, color 0.05s ease;
+            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.2), inset 0 -3px 6px rgba(255, 255, 255, 0.25);
+            transition: background-color 0.04s ease, color 0.04s ease;
         }
         
-        /* Hanuman ji jaisi instant super-fast 3D bounce effect har word par */
+        /* Hanuman ji jaisi super lightning fast 3D pop bounce */
         .tile-bounce {
-            animation: hanumanFastBounce 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: hanumanSuperFastBounce 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes hanumanFastBounce {
-            0% { transform: scale(0.7); opacity: 0.5; }
+        @keyframes hanumanSuperFastBounce {
+            0% { transform: scale(0.65); opacity: 0.4; }
             100% { transform: scale(1); opacity: 1; }
         }
 
         .tile.selectable {
             border: 3px dashed #776e65;
-            animation: pulse 0.5s infinite alternate;
+            animation: pulse 0.4s infinite alternate;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
             100% { transform: scale(1.03); }
         }
         
-        .tile-2 { background: #eee4da; color: #776e65; }
-        .tile-4 { background: #ede0c8; color: #776e65; }
-        .tile-8 { background: #f2b179; color: #f9f6f2; }
-        .tile-16 { background: #f59563; color: #f9f6f2; }
-        .tile-32 { background: #f67c5f; color: #f9f6f2; }
-        .tile-64 { background: #f65e3b; color: #f9f6f2; font-size: clamp(22px, 6vw, 36px); }
-        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: clamp(20px, 5.2vw, 32px); box-shadow: 0 0 15px rgba(237,207,114,0.5); }
-        .tile-256 { background: #edcc61; color: #f9f6f2; font-size: clamp(20px, 5.2vw, 32px); box-shadow: 0 0 15px rgba(237,204,97,0.6); }
-        .tile-512 { background: #edc850; color: #f9f6f2; font-size: clamp(20px, 5.2vw, 32px); }
-        .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: clamp(17px, 4.5vw, 28px); }
-        .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: clamp(17px, 4.5vw, 28px); box-shadow: 0 0 20px rgba(237,194,46,0.7); }
+        /* Official Bright & Glowing Color Grading */
+        .tile-2 { background: #eee4da; color: #776e65; text-shadow: 0 1px 1px rgba(255,255,255,0.6); }
+        .tile-4 { background: #ede0c8; color: #776e65; text-shadow: 0 1px 1px rgba(255,255,255,0.6); }
+        .tile-8 { background: #f2b179; color: #f9f6f2; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+        .tile-16 { background: #f59563; color: #f9f6f2; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+        .tile-32 { background: #f67c5f; color: #f9f6f2; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+        .tile-64 { background: #f65e3b; color: #f9f6f2; font-size: clamp(22px, 6vw, 36px); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: clamp(20px, 5.2vw, 32px); box-shadow: inset 0 5px 10px rgba(0,0,0,0.15), 0 0 18px rgba(237,207,114,0.7); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .tile-256 { background: #edcc61; color: #f9f6f2; font-size: clamp(20px, 5.2vw, 32px); box-shadow: inset 0 5px 10px rgba(0,0,0,0.15), 0 0 18px rgba(237,204,97,0.8); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .tile-512 { background: #edc850; color: #f9f6f2; font-size: clamp(20px, 5.2vw, 32px); box-shadow: inset 0 5px 10px rgba(0,0,0,0.15), 0 0 20px rgba(237,200,80,0.9); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: clamp(17px, 4.5vw, 28px); box-shadow: inset 0 5px 10px rgba(0,0,0,0.15), 0 0 22px rgba(237,197,63,1); text-shadow: 0 2px 4px rgba(0,0,0,0.35); }
+        .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: clamp(17px, 4.5vw, 28px); box-shadow: inset 0 5px 10px rgba(0,0,0,0.15), 0 0 25px rgba(237,194,46,1); text-shadow: 0 2px 4px rgba(0,0,0,0.35); }
 
         .top-popup {
             position: absolute;
@@ -195,16 +196,16 @@
             font-weight: bold;
         }
 
-        /* Ultra Modern Bold & Smooth Game Over Modal */
+        /* Ultra Modern Bold Glassmorphism Game Over Modal */
         .game-over-modal {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(238, 228, 218, 0.94);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(238, 228, 218, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-radius: 18px;
             display: flex;
             flex-direction: column;
@@ -213,14 +214,14 @@
             gap: 20px;
             display: none;
             z-index: 50;
-            animation: ultraSmoothModal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: ultraSmoothModal 0.18s cubic-bezier(0.16, 1, 0.3, 1);
         }
         @keyframes ultraSmoothModal {
-            0% { opacity: 0; transform: scale(0.88); }
+            0% { opacity: 0; transform: scale(0.85); }
             100% { opacity: 1; transform: scale(1); }
         }
         .game-over-modal h2 {
-            font-size: 36px;
+            font-size: 38px;
             color: #776e65;
             margin: 0;
             font-weight: 900;
@@ -244,7 +245,7 @@
             font-size: 14px;
             cursor: pointer;
             box-shadow: 0 6px 15px rgba(0,0,0,0.18);
-            transition: transform 0.06s ease, background 0.06s ease;
+            transition: transform 0.05s ease, background 0.05s ease;
             text-align: center;
         }
         .modal-btn:active {
@@ -604,7 +605,6 @@
             }
         }
 
-        
         function handleCellClick(r, c) {
             if(mode === 'exchange_first') {
                 if(board[r][c] === 0) {
